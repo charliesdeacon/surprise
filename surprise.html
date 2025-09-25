@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>surprise</title>
+  <style>
+    :root{
+      --bg:#000000;
+      --card:#0a0a0a;
+      --accent:#7dd3fc;
+      --muted:#999;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:#f0f0f0;}
+    .wrap{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:32px;
+    }
+    .card{
+      width: min(480px, 92vw);
+      background: var(--card);
+      border-radius:14px;
+      padding:36px;
+      text-align:center;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+    h1{margin:0 0 18px 0;font-size:2.2rem;}
+    p.lead{margin:0 0 26px 0;color:var(--muted);}
+    .button-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    button{
+      background:#111;
+      color:var(--accent);
+      border: 1px solid rgba(125,211,252,0.3);
+      padding:10px 18px;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      min-width:110px;
+      transition: transform .12s ease, box-shadow .12s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    button:active{ transform: translateY(1px) scale(.98); }
+    button.ghost{
+      background: transparent;
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.2);
+    }
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+    .yay{font-size:3rem;color:#a7f3d0;margin:20px 0;}
+    .tiny{font-size:.85rem;color:var(--muted);margin-top:12px;}
+  </style>
+</head>
+<body>
+  <main class="wrap" role="main">
+    <section class="card" aria-live="polite">
+      <!-- Screen 1 -->
+      <div id="screen-hi" class="screen active" data-screen="hi">
+        <h1>hi</h1>
+        <p class="lead">click below to continue</p>
+        <div class="button-row">
+          <button id="btn-hi">Hi</button>
+        </div>
+      </div>
+
+      <!-- Screen 2 -->
+      <div id="screen-iloveyou" class="screen" data-screen="iloveyou">
+        <h1>i love you</h1>
+        <p class="lead">say it back</p>
+        <div class="button-row">
+          <button id="btn-iloveyou">i love you too</button>
+        </div>
+      </div>
+
+      <!-- Screen 3 -->
+      <div id="screen-question" class="screen" data-screen="question">
+        <h1>do you want to go to homecoming with me?</h1>
+        <div class="button-row">
+          <button id="btn-yes">Yes</button>
+          <button id="btn-no" class="ghost">No</button>
+        </div>
+        <p class="tiny" id="no-msg"></p>
+      </div>
+
+      <!-- Screen 4 -->
+      <div id="screen-yay" class="screen" data-screen="yay">
+        <div class="yay">YAY </div>
+        <p class="lead">good choice.</p>
+        <div class="button-row">
+          <button id="btn-reset" class="ghost">Start over</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const screens = {
+      hi: document.getElementById('screen-hi'),
+      iloveyou: document.getElementById('screen-iloveyou'),
+      question: document.getElementById('screen-question'),
+      yay: document.getElementById('screen-yay')
+    };
+    const show = (name) => {
+      Object.values(screens).forEach(s => {
+        s.classList.toggle('active', s.dataset.screen === name);
+      });
+    };
+
+    document.getElementById('btn-hi').onclick = () => show('iloveyou');
+    document.getElementById('btn-iloveyou').onclick = () => show('question');
+    document.getElementById('btn-yes').onclick = () => show('yay');
+    document.getElementById('btn-reset').onclick = () => show('hi');
+
+    // Passive aggressive "No"
+    const noMsgs = [
+      "oh okay💔",
+      "💔",
+      "nvm then💔",
+      "sigh.",
+      "didn’t want you there anyway💔"
+    ];
+    const noBtn = document.getElementById('btn-no');
+    const noMsg = document.getElementById('no-msg');
+    let noClick = 0;
+    noBtn.onclick = () => {
+      noMsg.textContent = noMsgs[noClick % noMsgs.length];
+      noClick++;
+    };
+  </script>
+</body>
+</html>
